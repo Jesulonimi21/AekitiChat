@@ -5,11 +5,11 @@ const Input =(props)=>{
    
     if(props.otherClass){
      allClasses.push(props.otherClass)
-        console.log(allClasses);
+        
     }
 
     return(
-       <input placeholder="Enter Ae Address of a user" className={allClasses.join(" ")}>
+       <input placeholder={props.placeHolder} onChange={props.onChange}  className={allClasses.join(" ")}>
        </input>
     );
 }

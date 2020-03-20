@@ -1,4 +1,4 @@
-const contractAddress="ct_7ukKhCDL6vqUWrC34BjCYn9jM4CckvNywhkqpaLRjKUyHrQas";
+const contractAddress="ct_R6QLSbCh18tqJwuM1sVTfonNgSJgb1yQPyefC4hPKFZqe4mHE";
 const contractSource=`
 include "List.aes"
 contract ReactChatApp=
@@ -6,7 +6,8 @@ contract ReactChatApp=
     name:string,
     discipline:string,
     status:string,
-    dpUrl:string
+    dpUrl:string,
+    pAddress:address
     }
   record messageInfo={
       message:string,
@@ -25,11 +26,11 @@ contract ReactChatApp=
   stateful entrypoint init()={usersProfile={},usersFriend={},usersMessages={}, friendRequests={},newestFriend={}}
   
   stateful entrypoint registerProfile(name':string,discipline':string,status':string,dpUrl':string)=
-    let newProfile={name=name',discipline=discipline',status=status',dpUrl=dpUrl'}
+    let newProfile={name=name',discipline=discipline',status=status',dpUrl=dpUrl',pAddress=Call.caller}
     put(state{usersProfile[Call.caller]=newProfile})
     
   entrypoint getProfile()=
-    Map.lookup_default(Call.caller,state.usersProfile,{name="",discipline="",status="",dpUrl=""})
+    Map.lookup_default(Call.caller,state.usersProfile,{name="",discipline="",status="",dpUrl="",pAddress=Call.caller})
     
     
   stateful entrypoint sendFriendRequest(friendsAddress':address)=
@@ -49,8 +50,13 @@ contract ReactChatApp=
      
      
   entrypoint getFriendRequest()=
-    Map.lookup_default(Call.caller,state.friendRequests,[])
+    let usersFriendRequest=List.map((el)=> Map.lookup_default(el,state.usersProfile,{name="",discipline="",status="",dpUrl="",pAddress=Call.caller}), Map.lookup_default(Call.caller,state.friendRequests,[]))
+    usersFriendRequest
     
+  stateful entrypoint rejectFriendRequest(newFriendsAddress:address)=
+    let friendRequestList=Map.lookup_default(Call.caller,state.friendRequests,[]) 
+    let newFriendRequestList=List.filter((x)=>x!=newFriendsAddress,friendRequestList) 
+    put(state{friendRequests[Call.caller]=newFriendRequestList})
 
   stateful entrypoint acceptFriendRequest(newFriendsAddress:address)=
     let friendRequestList=Map.lookup_default(Call.caller,state.friendRequests,[])  
@@ -64,7 +70,8 @@ contract ReactChatApp=
     put(state{usersFriend=newUsersFriendMap,friendRequests[Call.caller]=newFriendRequestList})
 
   entrypoint getUsersFriend()=
-    Map.lookup_default(Call.caller,state.usersFriend,[])
+    let usersFriend=List.map((el)=> Map.lookup_default(el,state.usersProfile,{name="",discipline="",status="",dpUrl="",pAddress=Call.caller}), Map.lookup_default(Call.caller,state.usersFriend,[]))
+    usersFriend
    
   stateful entrypoint sendMessage(receiver:address,message':string,time':string)=
         let newMessage={message=message', time=time',sender=Call.caller,seen=false}
@@ -85,7 +92,8 @@ contract ReactChatApp=
         put(state{usersMessages=newUpdatedState})
   
   entrypoint getMessages()=
-    Map.lookup_default(Call.caller,state.usersMessages,{})  
+    Map.lookup_default(Call.caller,state.usersMessages,{})
+
 `;
 export default{
     contractAddress:contractAddress,

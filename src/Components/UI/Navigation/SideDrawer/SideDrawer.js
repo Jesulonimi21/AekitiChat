@@ -18,7 +18,7 @@ const sideDrawer=(props)=>{
    
     <div className={classNames.join(" ")}>
             
-            <NavigationItems frClicked={props.frClicked}></NavigationItems>
+            <NavigationItems frClicked={props.frClicked} mpClicked={props.mpClicked}></NavigationItems>
             
         </div>
         <Backdrop show={props.showBackdrop} clicked={props.navToggle}></Backdrop>

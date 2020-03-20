@@ -4,8 +4,8 @@ import  './Friend.css';
 const Friend=(props)=>{
     return(
         <div className="Friend">
-            <img src={dp} />
-            <h4>Jesulonimi</h4>
+            <img src={props.imageString} />
+            <h4>{props.name}</h4>
         </div>
     );
 }
