@@ -33,6 +33,7 @@ class SendRequest extends Component{
      }
      await   this.props.client.methods.sendFriendRequest(this.state.aeAddress);
      this.setState({loading:false});
+     this.props.history.goBack();
    }
    render(){ 
        return(

@@ -9,6 +9,7 @@ import SideDrawer from './Components/UI/Navigation/SideDrawer/SideDrawer';
 import UpdateProfile from './Components/Pages/UpdateProfile/UpdateProfile';
 import FriendRequests from './Components/Pages/FriendRequests/FriendRequests';
 import ViewProfile from './Components/Pages/ViewProfile/ViewProfile';
+import Chats from './Components/Pages/Chats/Chats';
 import axios from 'axios';
 import {BrowserRouter,Route} from 'react-router-dom';
 
@@ -111,7 +112,9 @@ url="https://cdn-media-1.freecodecamp.org/imgr/MJAkxbh.png";
          {this.state.loading? <Spinner/> :null}
        <Header imageUrl={this.state.imageUrl} navToggle={this.openNavigationDrawer} profToggle={this.toggleRegProfile}/>
        <SideDrawer frClicked={this.goToFriendRequests} mpClicked={this.goToViewProfile} showBackdrop={this.state.showBackdrop} navToggle={this.openNavigationDrawer} isOpen= {this.state.isOpen}/>
-      {this.props.client=="null"?null: <Route exact path="/" component={FriendList}/>}
+      {/* {this.props.client=="null"?null: <Route exact path="/" component={FriendList}/>} */}
+
+      <Route exact path="/" component={Chats}/>
      
        <Route path="/friend_requests" component={FriendRequests}/>
        <Route path="/user_profile" component={ViewProfile}/>
