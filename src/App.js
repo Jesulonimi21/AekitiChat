@@ -32,14 +32,18 @@ class App extends Component {
     let client =await getClient();
     console.log(client)
     this.props.setClient(client);
-    let usersProfile=await this.props.client.call("getProfile",[]);
-    let decodedUsersProfile=await usersProfile.decode().catch(err=>console.error(err));
+       let decodedUsersProfile=(await this.props.client.methods.getProfile()).decodedResult;
+    // let usersProfile=await this.props.client.call("getProfile",[]);
+    // let decodedUsersProfile=await usersProfile.decode().catch(err=>console.error(err));
     console.log("Users Profile",decodedUsersProfile);
+    this.props.setUsersProfile(decodedUsersProfile);
     if(decodedUsersProfile.name!=""){
     
       axios.get(`https://ipfs.io/ipfs/${decodedUsersProfile.dpUrl}`).then(result=>{
         console.log("axiosres",result);
-        this.setState({imageUrl:result.data,loading:false});
+        // this.setState({imageUrl:result.data,loading:false});
+        this.setState({loading:false});
+        this.props.setGeneralImage(result.data);
       }).catch(error=>{
             console.error(error);
       });
@@ -129,7 +133,9 @@ const mapStateToProps=(state)=>{
 
 const mapDispatchToProps=(dispatch)=>{
   return{
-    setClient:(client)=>dispatch({type:"SET_CLIENT",client:client})
+    setClient:(client)=>dispatch({type:"SET_CLIENT",client:client}),
+    setGeneralImage:(imageData)=>dispatch({type:"SET_GENERAL_IMAGE",generalImage:imageData}),
+    setUsersProfile:(profile)=>dispatch({type:"SET_USER_PROFILE",usersProfile:profile})
   }
 }
 

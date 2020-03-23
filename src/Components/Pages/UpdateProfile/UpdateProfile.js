@@ -4,6 +4,7 @@ import Input from '../../UI/Input/Input';
 import Button from '../../UI/Button/Button';
 import Spinner from '../../UI/Spinner/Spinner';
 import BackDrop from '../../UI/Backdrop/Backdrop';
+import axios from 'axios';
 import {ipfs,base64ArrayBuffer} from '../../../HelperFiles/ipfs';
 import buffer from 'buffer';
 import {connect} from 'react-redux';
@@ -43,19 +44,28 @@ class UpdateProfile extends React.Component{
         reader.readAsArrayBuffer(file);
         let myResult="";
         reader.onloadend=()=>{
-          ipfs.add(prefix+base64ArrayBuffer(Buffer(reader.result)),async (err,result)=>{
+          ipfs.add(prefix+base64ArrayBuffer(Buffer(reader.result)),async (err,result)=>
+          {
             if(err){
               console.log(err);
               return;
             }
             myResult=result;
             console.log(result,"Am hashz");
-            await this.props.client.call("registerProfile",[this.state.name,this.state.discipline,this.state.status,result])
+            axios.get(`https://ipfs.io/ipfs/${result}`).then(async(result)=>{
+                console.log(result)
+                await this.props.client.call("registerProfile",[this.state.name,this.state.discipline,this.state.status,myResult]);
+          
+            this.props.setGeneralImage(result.data);
             this.setState({showLoader:!this.state.showLoader});   
             this.props.history.goBack()
-        return result
+  
+            }).catch((error)=>{
+                console.error(error);
+            });
+            
           });
-        console.log(reader.result)
+        // console.log(reader.result)
 
         }
        
@@ -112,4 +122,10 @@ const mapStateToProps=(state)=>{
         client:state.client
     }
 }
-export default connect(mapStateToProps)(UpdateProfile);
+
+const mapDispatchToProps=(dispatch)=>{
+    return{
+      setGeneralImage:(imageData)=>dispatch({type:"SET_GENERAL_IMAGE",generalImage:imageData})
+    }
+  }
+export default connect(mapStateToProps,mapDispatchToProps)(UpdateProfile);

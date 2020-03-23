@@ -84,8 +84,34 @@ class FriendRequests extends Component{
     }
 
 
-    handleRejectButton=(event)=>{
+    handleRejectButton=async(pKey)=>{
         console.log("reject");
+        this.setState({loading:true});
+          await this.props.client.methods.rejectFriendRequest(pKey);
+          let friendRequest=( await   this.props.client.methods.getFriendRequest()).decodedResult;
+        let myArr=[]
+        friendRequest.map((el,index)=>{
+          axios.get(`https://ipfs.io/ipfs/${el.dpUrl}`)
+             .then(result=>{
+                 let imageString=result.data;
+                 let data={
+                     ...el,
+                     imageString
+                 };
+                 myArr.push(data);
+                 if(index==(friendRequest.length-1)){
+                     this.setState({loading:false,friendReqList:myArr});
+                 }
+                 return data;
+             }).catch(error=>{
+                 this.setState({loading:false});
+                 console.error(error);
+             });          
+         });
+
+         if(friendRequest.length==0){
+            this.setState({loading:false,friendReqList:myArr});
+         }
     }
 
     render(){
@@ -100,7 +126,7 @@ class FriendRequests extends Component{
               }}></DisplayModal>:null}
             {this.state.loading?<Spinner></Spinner>:null}
             {this.state.friendReqList.map(el=>{
-                return<FriendRequest reject={this.handleRejectButton} imageString={el.imageString} accept={()=>this.handleAcceptButton(el.pAddress)} name={el.name} pKey={el.pAddress}></FriendRequest>
+                return<FriendRequest reject={()=>this.handleRejectButton(el.pAddress)} imageString={el.imageString} accept={()=>this.handleAcceptButton(el.pAddress)} name={el.name} pKey={el.pAddress}></FriendRequest>
             })}
             
             

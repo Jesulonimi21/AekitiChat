@@ -1,4 +1,4 @@
-const contractAddress="ct_R6QLSbCh18tqJwuM1sVTfonNgSJgb1yQPyefC4hPKFZqe4mHE";
+const contractAddress="ct_28gXqJAkyBJtvagu5M8PCTi9VmacJzbBcMein6ovrYAm4gcSsg";
 const contractSource=`
 include "List.aes"
 contract ReactChatApp=
@@ -94,6 +94,10 @@ contract ReactChatApp=
   entrypoint getMessages()=
     Map.lookup_default(Call.caller,state.usersMessages,{})
 
+  entrypoint getFriendMessage(friendAddress:address)=
+    let allUsersMessages=getMessages()
+    let friendMessage=allUsersMessages[friendAddress]
+    friendMessage
 `;
 export default{
     contractAddress:contractAddress,

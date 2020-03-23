@@ -1,16 +1,17 @@
 import React from 'react';
 import './Header.css';
 import {Link} from 'react-router-dom';
+import {connect} from 'react-redux';
 import dp from '../../../dp.jpg';
 const Header=(props)=>{
     let usersDp=dp;
-    if(props.imageUrl!=""){
-        usersDp=props.imageUrl;
+    if(props.generalImage!=""){
+        usersDp=props.generalImage;
     }
     
     return(
         <header >
-          <Link to="/update_profile" > <img src={usersDp} className="header-img" onClick={props.profToggle}/></Link>
+          <Link to="/update_profile" > <img src={props.generalImage} className="header-img" onClick={props.profToggle}/></Link>
           <Link style={{textDecoration:'none'}} to="/">  <h4 className="appname" >Aekiti Chat</h4></Link>
 
             <div className="nav-drawer" onClick={props.navToggle}>
@@ -21,5 +22,8 @@ const Header=(props)=>{
         </header>
     )
 }
+const mapStateToProps=(state)=>{
+    return{generalImage:state.generalImage}
+}
 
-export default Header;
+export default connect(mapStateToProps)(Header);
