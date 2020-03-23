@@ -27,7 +27,7 @@ class App extends Component {
   }
 
   async componentDidMount(){
-    return;
+    
     console.log(this.props.client);
     let client =await getClient();
     console.log(client)
@@ -36,7 +36,7 @@ class App extends Component {
     let decodedUsersProfile=await usersProfile.decode().catch(err=>console.error(err));
     console.log("Users Profile",decodedUsersProfile);
     if(decodedUsersProfile.name!=""){
-      // this.getImage(decodedUsersProfile.dpUrl);
+    
       axios.get(`https://ipfs.io/ipfs/${decodedUsersProfile.dpUrl}`).then(result=>{
         console.log("axiosres",result);
         this.setState({imageUrl:result.data,loading:false});
@@ -49,18 +49,13 @@ class App extends Component {
     this.setState({loading:false,profileData:decodedUsersProfile});
   }
 
-  getImage=(result)=>{
-  const req = new XMLHttpRequest();
-  req.responseType = "text/html";
-
-  req.onload = function(e) {
-   
-    console.log(req.response);
-    this.setState({imageUrl:req.response,loading:false});
-  }.bind(this);
-
-  req.open('GET',`https://ipfs.io/ipfs/${result}`, true);
-  req.send();
+  changeHeaderImage=(result)=>{
+ axios.get(`https://ipfs.io/ipfs/${result}`).then(result=>{
+      console.log("axiosres",result);
+      this.setState({imageUrl:result.data,loading:false});
+    }).catch(error=>{
+          console.error(error);
+    });
 }
 
 
@@ -112,9 +107,9 @@ url="https://cdn-media-1.freecodecamp.org/imgr/MJAkxbh.png";
          {this.state.loading? <Spinner/> :null}
        <Header imageUrl={this.state.imageUrl} navToggle={this.openNavigationDrawer} profToggle={this.toggleRegProfile}/>
        <SideDrawer frClicked={this.goToFriendRequests} mpClicked={this.goToViewProfile} showBackdrop={this.state.showBackdrop} navToggle={this.openNavigationDrawer} isOpen= {this.state.isOpen}/>
-      {/* {this.props.client=="null"?null: <Route exact path="/" component={FriendList}/>} */}
+      {this.props.client=="null"?null: <Route exact path="/" component={FriendList}/>}
 
-      <Route exact path="/" component={Chats}/>
+      <Route exact path="/current_chat" component={Chats}/>
      
        <Route path="/friend_requests" component={FriendRequests}/>
        <Route path="/user_profile" component={ViewProfile}/>

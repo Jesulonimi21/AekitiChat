@@ -44,7 +44,10 @@ async componentDidMount(){
     // this.setState({usersFriend:newFriendList});
     console.log("friend start mount");
 }
-
+    handleusersFriendClicked=(userFriend)=>{
+        this.props.setCurrentChat(userFriend);
+        this.props.history.push("/current_chat");
+        }
  render(){
     return(
         
@@ -52,7 +55,10 @@ async componentDidMount(){
             <h4>Friends</h4>
             {this.state.usersFriend.map(el=>{
                 console.log(el);
-                return <Friend name={el.name}  imageString={el.imageString}/>
+                return <Friend name={el.name} clicked={(event)=>{
+                    this.handleusersFriendClicked(el)
+                    
+                }} imageString={el.imageString}/>
             })}
           <Link to="/send_requests">   <ActionButton /></Link>
         </div>
@@ -62,7 +68,13 @@ async componentDidMount(){
 
 const mapStateToProps=(state)=>{
     return{
-        contractInstance:state.client
-    }
+        contractInstance:state.client,
+    }  
 }
-export default connect(mapStateToProps)(FriendList);
+
+const mapDispatchToProps=(dispatch)=>{
+    return{
+        setCurrentChat:(newCurrentChat)=>dispatch({type:"SET_CURRENT_CHAT",currentChat:newCurrentChat})
+    };
+}
+export default connect(mapStateToProps,mapDispatchToProps)(FriendList);

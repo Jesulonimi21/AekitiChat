@@ -3,7 +3,7 @@ import dp from '../../../dp.jpg';
 import  './Friend.css';
 const Friend=(props)=>{
     return(
-        <div className="Friend">
+        <div className="Friend" onClick={props.clicked}>
             <img src={props.imageString} />
             <h4>{props.name}</h4>
         </div>

@@ -2,8 +2,14 @@ import React,{Component} from 'react';
 import ChatList from './ChatList/ChatList';
 import Input from '../../UI/Input/Input';
 import Button from '../../UI/Button/Button';
+import {connect} from 'react-redux';
 import './Chats.css';
 class Chats extends Component{
+
+    componentDidMount(){
+        console.log("currrent chat",this.props.currentChat);
+        console.log("currrent chat",this.props.contractInstance);
+    }
 state={
     inputValue:""
 }
@@ -23,4 +29,11 @@ handleInputChange=(event)=>{
     }
 }
 
-export default Chats;
+const mapStateToProps=(state)=>{
+    return{
+        contractInstance:state.client,
+        currentChat:state.currentChat
+    }
+}
+
+export default connect(mapStateToProps)(Chats);
