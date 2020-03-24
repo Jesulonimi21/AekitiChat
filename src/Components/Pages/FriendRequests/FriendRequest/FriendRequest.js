@@ -1,7 +1,7 @@
 import React from "react";
 import './FriendRequest.css';
 import Button from '../../../UI/Button/Button';
-import dp from '../../../../dp.jpg';
+import dp from '../../../../dp.png';
 const FriendRequest=(props)=>{
     return <div className="FriendRequest">
 

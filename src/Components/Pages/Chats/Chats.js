@@ -4,27 +4,45 @@ import Input from '../../UI/Input/Input';
 import Button from '../../UI/Button/Button';
 import {connect} from 'react-redux';
 import axios from 'axios';
+import Spinner from '../../UI/Spinner/Spinner';
 import './Chats.css';
+import { stat } from 'fs';
 class Chats extends Component{
-
+timeInterval=null;
     async componentDidMount(){
        
-        
+        this.setState({loading:true}); 
         axios.get(`https://ipfs.io/ipfs/${this.props.currentChat.dpUrl}`).then((result)=>{
-            this.props.setGeneralImage(result.data);
+        this.props.setPrevImage(this.props.generalImage);   
+        this.props.setGeneralImage(result.data);
+           
         }).catch((error)=>{
             console.error(error);
         })
         let allMessages=  (await  this.props.contractInstance.methods.getFriendMessage(this.props.currentChat.pAddress)).decodedResult;
         console.log(allMessages);
-        this.setState({messages:allMessages.reverse()});
+        this.setState({loading:false,messages:allMessages.reverse()});
         
+      this.timeInterval= setInterval(async()=>{
+            console.log("getting new message")
+            let allMessages=  (await  this.props.contractInstance.methods.getFriendMessage(this.props.currentChat.pAddress)).decodedResult;
+            console.log(allMessages);
+            this.setState({messages:allMessages.reverse()});
+            
+        },5000);
 
     }
+ componentWillUnmount(){
+     
+      clearInterval(this.timeInterval);
+     console.log("Component unmounted")
+ }
 state={
     inputValue:"",
-    messages:[]
+    messages:[],
+    loading:false
 }
+
 handleSendMessage=async(event)=>{
     
    await this.props.contractInstance.methods.sendMessage(this.props.currentChat.pAddress,this.state.inputValue,this.getTime());
@@ -50,6 +68,7 @@ return d.toLocaleTimeString();
 
     render(){
         return <div>
+                    {this.state.loading? <Spinner/> :null}
                     <ChatList messages={this.state.messages}></ChatList>
 
                     <div className="ChatsMessageDiv">
@@ -63,12 +82,14 @@ return d.toLocaleTimeString();
 const mapStateToProps=(state)=>{
     return{
         contractInstance:state.client,
-        currentChat:state.currentChat,     
+        currentChat:state.currentChat,    
+        generalImage:state.generalImage 
     }
 }
 const mapDispatchToProps=(dispatch)=>{
     return{
       setGeneralImage:(imageData)=>dispatch({type:"SET_GENERAL_IMAGE",generalImage:imageData}),
+      setPrevImage:(prevImg)=>dispatch({type:"SET_PREV_IMAGE",prevImage:prevImg})
     }
   }
 

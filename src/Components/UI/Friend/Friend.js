@@ -1,5 +1,5 @@
 import React from 'react';
-import dp from '../../../dp.jpg';
+import dp from '../../../dp.png';
 import  './Friend.css';
 const Friend=(props)=>{
     return(

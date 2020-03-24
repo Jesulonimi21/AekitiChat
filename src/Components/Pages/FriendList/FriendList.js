@@ -13,9 +13,12 @@ state={
 
 async componentDidMount(){
     console.log("friend start mount")
+    if(this.props.prevImage!=null){
+        this.props.setGeneralImage(this.props.prevImage);
+    }
     let friendList=(await this.props.contractInstance.methods.getUsersFriend()).decodedResult;
     let myArr=[];
-
+  
     friendList.map((el,index)=>{
         console.log("el",el);
     axios.get(`https://ipfs.io/ipfs/${el.dpUrl}`).then((result)=>{
@@ -25,14 +28,14 @@ async componentDidMount(){
                 imageString
             };
             myArr.push(data);
-            console.log("the index is "+index +" and the length is "+friendList.length );
+            console.log("the index is "+index +" and the length is "+myArr.length );
             console.log("My Array",myArr);
-            if(index==(friendList.length-1)){
+            // if(index==(myArr.length-1)){
+                console.log("inside update")
                 console.log(myArr);
                 this.setState({usersFriend:myArr})
-            }
-            return data;
-         
+                console.log("inside update",this.state.usersFriend);
+            // }
         }).catch(error=>{
             console.error(error);
         });
@@ -55,10 +58,10 @@ async componentDidMount(){
             <h4>Friends</h4>
             {this.state.usersFriend.map(el=>{
                 console.log(el);
-                return <Friend name={el.name} clicked={(event)=>{
+                return (<Friend name={el.name} clicked={(event)=>{
                     this.handleusersFriendClicked(el)
                     
-                }} imageString={el.imageString}/>
+                }} imageString={el.imageString}/>);
             })}
           <Link to="/send_requests">   <ActionButton /></Link>
         </div>
@@ -69,11 +72,13 @@ async componentDidMount(){
 const mapStateToProps=(state)=>{
     return{
         contractInstance:state.client,
+        prevImage:state.prevImage
     }  
 }
 
 const mapDispatchToProps=(dispatch)=>{
     return{
+        setGeneralImage:(imageData)=>dispatch({type:"SET_GENERAL_IMAGE",generalImage:imageData}),
         setCurrentChat:(newCurrentChat)=>dispatch({type:"SET_CURRENT_CHAT",currentChat:newCurrentChat})
     };
 }

@@ -1,10 +1,12 @@
-import dp from '../dp.jpg';
+import dp from '../dp.png';
+import { stat } from 'fs';
 
 let initialState={
     client:"null",
     currentChat:null,
     generalImage:dp,
-    usersProfile:{}
+    usersProfile:{},
+    prevImage:null
 
 }
 
@@ -27,6 +29,12 @@ const reducer=(state=initialState,action)=>{
         return{
             ...state,usersProfile:action.usersProfile
         }
+    }
+    if(action.type="SET_PREV_IMAGE"){
+        console.log("PrevImage");
+        return{
+            ...state,prevImage:action.prevImage
+        };
     }
     return{...state}
 }

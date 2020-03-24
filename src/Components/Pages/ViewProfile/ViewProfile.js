@@ -1,6 +1,6 @@
 import React,{Component} from 'react';
 import './ViewProfile.css';
-import picture from '../../../dp.jpg';
+import picture from '../../../dp.png';
 import {connect} from 'react-redux';
 import axios from 'axios';
 import Button from '../../UI/Button/Button';

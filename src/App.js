@@ -27,7 +27,7 @@ class App extends Component {
   }
 
   async componentDidMount(){
-    
+    this.setState({loading:true});
     console.log(this.props.client);
     let client =await getClient();
     console.log(client)
@@ -41,13 +41,12 @@ class App extends Component {
     
       axios.get(`https://ipfs.io/ipfs/${decodedUsersProfile.dpUrl}`).then(result=>{
         console.log("axiosres",result);
-        // this.setState({imageUrl:result.data,loading:false});
-        this.setState({loading:false});
+        // this.setState({imageUrl:result.data,loading:false});    
         this.props.setGeneralImage(result.data);
       }).catch(error=>{
             console.error(error);
       });
-       this.setState({profileData:decodedUsersProfile});
+       this.setState({loading:false,profileData:decodedUsersProfile});
        return;
     }
     this.setState({loading:false,profileData:decodedUsersProfile});

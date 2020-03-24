@@ -2,7 +2,7 @@ import React from 'react';
 import './Header.css';
 import {Link} from 'react-router-dom';
 import {connect} from 'react-redux';
-import dp from '../../../dp.jpg';
+import dp from '../../../dp.png';
 const Header=(props)=>{
     let usersDp=dp;
     if(props.generalImage!=""){
