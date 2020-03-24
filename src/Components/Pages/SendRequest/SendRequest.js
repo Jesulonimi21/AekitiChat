@@ -47,7 +47,7 @@ class SendRequest extends Component{
                   
               }}></DisplayModal>:null}
                {this.state.loading?  <Spinner></Spinner>:null}
-                <Input placeHolder="Enter Your Ae Address" onChange={this.inputChangedHandler} ></Input>
+                <Input placeHolder="Enter  Ae Address" onChange={this.inputChangedHandler} ></Input>
                <div className="SendRequestButton">
 
                <Button clicked={this.handleSubmitButton}>Send Request</Button>

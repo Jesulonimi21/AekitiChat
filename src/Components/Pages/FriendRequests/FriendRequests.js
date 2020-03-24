@@ -37,10 +37,10 @@ class FriendRequests extends Component{
                 this.setState({loading:false});
                 console.error(error);
             });
-          
-          
-
         });
+        if(friendRequest.length==0){
+            this.setState({loading:false});
+        }
    
         
     }
