@@ -5,6 +5,7 @@ import {connect} from 'react-redux';
 import axios from 'axios';
 import Button from '../../UI/Button/Button';
 import { stat } from 'fs';
+import Spinner from '../../UI/Spinner/Spinner';
 
 class ViewProfile extends Component{
 
@@ -12,25 +13,26 @@ class ViewProfile extends Component{
         dpHash:picture,
         name:"",
         discipline:"",
-        status:""
+        status:"",
+         loading:false,
     }
     
    async componentDidMount(){
-    this.props.toggleLoader();  
+   this.setState({loading:true})
    console.log(this.props.client)    
   let profile=(await  this.props.client.methods.getProfile()).decodedResult;
   if(profile){
       axios.get(`https://ipfs.io/ipfs/${profile.dpUrl}`).then(response=>{
           console.log(response);
           this.setState({dpHash:response.data})
-            this.props.toggleLoader(); 
+            this.setState({loading:false}) 
       }).catch(err=>{
           console.error(err);
-           this.props.toggleLoader(); 
+     this.setState({loading:false}) 
       })
       this.setState({name:profile.name,discipline:profile.discipline,status:profile.status})
   }else{
-       this.props.toggleLoader(); 
+       this.setState({loading:false}) 
   }
   console.log(profile);
  
@@ -38,7 +40,7 @@ class ViewProfile extends Component{
 
     render(){
         return (<div className="ViewProfile">
-
+{this.state.loading?  <Spinner></Spinner>:null}
                     <img src={this.state.dpHash} className="VPImage"/>
                     <h4>{this.state.name}</h4>
                     <h4>{this.state.discipline}</h4>
