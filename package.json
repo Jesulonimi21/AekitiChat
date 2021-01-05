@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "@aeternity/aepp-sdk": "^6.0.0",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "buffer": "^5.4.3",
     "react": "^16.8.3",
     "react-dom": "^16.8.3",
